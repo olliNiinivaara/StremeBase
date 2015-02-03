@@ -40,7 +40,7 @@ public class Stremebase_2_DataTypes
     p("Therefore following data types are supported out of the box:");
     p("");
     p("long: naturally - hence anything Java can cast to long: ints, shorts, bytes, ...");
-    p("boolean: you get not one, but 64 booleans per entry!");
+    p("boolean: An array of booleans per entry");
     p("double: floating point numbers");
     p("java.time.Instant: with a millisecond precision");
     p("java.time.localDateTime: Instant with a zone information from DB.db.ZONE");
@@ -164,7 +164,7 @@ public class Stremebase_2_DataTypes
     p("");
     p("");
     p("For these boolean arrays, range queries do not make sense.");
-    p("Instead, query by scanning through all values and applying a bit mask.");
+    p("Just scan through all values and apply a bit mask.");
     p("For example: to get keys where 0th and 62nd booleans are true, you would: ");
     p("final long trueMask = To.mask(0, 62);");    
     p("map.keyset().filter(key -> ((map.get(key) & trueMask) == trueMask)).forEach(key -> p(\"%%d\", key));");
