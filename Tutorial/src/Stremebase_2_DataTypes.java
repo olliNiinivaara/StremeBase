@@ -1,3 +1,5 @@
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 import com.stremebase.map.OneMap;
@@ -19,9 +21,9 @@ public class Stremebase_2_DataTypes
     welcome();
     lesson1_integers();
     lesson2_booleans();
-    /*lesson3_doubles();
+    lesson3_doubles();
     lesson4_temporalunits();
-    lesson5_strings();*/
+    lesson5_strings();
     l();
     p("Bye!");
   }
@@ -29,7 +31,7 @@ public class Stremebase_2_DataTypes
   public static void welcome()
   {
     l();
-    p("Stremebase v.0.1 Tutorial - Chapter 2: Supported Data Types");
+    p("Stremebase v.0.2 Tutorial - Chapter 2: Supported Data Types");
     p("");
     p("Under the hood Stremebase operates with longs (arrays of 64 bits).");
     p("Therefore any data type for which you can devise a bijection to longs is supported.");
@@ -45,7 +47,7 @@ public class Stremebase_2_DataTypes
     p("java.time.Instant: with a millisecond precision");
     p("java.time.localDateTime: Instant with a zone information from DB.db.ZONE");
     p("java.lang.String: no size limits");
-    p("java.lang.StringBuilder: full text documents can be indexed and searched");
+    p("java.lang.StringBuilder: full text documents can be indexed and searched (not covered in this chapter)");
     p("");
     p("If you cannot figure out how to map a datatype to long (some BLOB maybe),");
     p("you can create a map with serializable objects as values,");
@@ -66,8 +68,8 @@ public class Stremebase_2_DataTypes
     p("");
     p("long lv = 4564564565234l;");
     p("map.put(1, lv);");
-    p("lv = map.get(1);");
     p("map.commit();");
+    p("lv = map.get(1);");
     p("System.out.printf(\"%%d\", lv);");
     long lv = 4564564565234l;
     map.put(1, lv);
@@ -131,8 +133,8 @@ public class Stremebase_2_DataTypes
     l();
     p("2: BOOLEANS");
     p("");
-    p("Because 64 bits is smallest addressable unit, we can handle 63 booleans in one shot:");
-    p("(you'd better not tamper with the 63rd bit)");
+    p("Because 64 bits is smallest addressable unit, we can handle 63 booleans in one shot.");
+    p("(better not tamper with the bit at index 63)");
     p("");
     
     p("long booleanArray = 0;");
@@ -165,18 +167,99 @@ public class Stremebase_2_DataTypes
     p("");
     p("For these boolean arrays, range queries do not make sense.");
     p("Just scan through all values and apply a bit mask.");
-    p("For example: to get keys where 0th and 62nd booleans are true, you would: ");
+    p("For example: to get keys where booleans at index 0 and 62 are true, you would: ");
     p("final long trueMask = To.mask(0, 62);");    
     p("map.keyset().filter(key -> ((map.get(key) & trueMask) == trueMask)).forEach(key -> p(\"%%d\", key));");
     final long trueMask = To.mask(0, 62);    
     map.keyset().filter(key -> ((map.get(key) & trueMask) == trueMask)).forEach(key -> p("%d", key));
     p("");
-    p("And to get keys where 1st boolean is false, you would: ");
+    p("And to get keys where the boolean at index 1 is false, you would: ");
     p("final long falseMask = To.mask(1);");    
     p("map.keyset().filter(key -> ((map.get(key) & falseMask) == 0)).forEach(key -> p(\"%%d\", key));");
     final long falseMask = To.mask(1);    
     map.keyset().filter(key -> ((map.get(key) & falseMask) == 0)).forEach(key -> p("%d", key));
     
+    in.nextLine();
+  }
+  
+  public static void lesson3_doubles()
+  {
+    l();
+    p("3: DOUBLES");
+    p("");
+    p("Just remember to convert doubles to longs with To.l() and back with To.toDouble()");
+    p("");
+    p("double dv = -12345.6789");
+    p("map.put(1, To.l(dv));");
+    p("map.put(2, To.l(2.9999999999));");
+    p("map.put(3, To.l(3));");
+    p("map.put(4, To.l(3.0000000001));");
+    p("map.put(5, To.l(3.9999999999));");
+    p("map.put(6, To.l(4));");
+    p("map.put(7, To.l(4.0000000001));");
+    p("map.commit();");
+    p("dv = map.get(1);");
+    p("System.out.printf(\"%%f\", dv);");
+    double dv = -12345.6789;
+    map.put(1, To.l(dv));
+    map.put(2, To.l(2.9999999999));
+    map.put(3, To.l(3));
+    map.put(4, To.l(3.0000000001));
+    map.put(5, To.l(3.9999999999));
+    map.put(6, To.l(4));
+    map.put(7, To.l(4.0000000001));
+    map.commit();
+    dv = To.toDouble(map.get(1));
+    System.out.printf("%f", dv);
+    p("");
+    p("");
+    p("Also queries work as expected: ");
+    p("map.query(To.l(3), To.l(4)).forEach(k -> System.out.printf(\"%%d -> %%f.10f\", k, To.toDouble(map.get(k))));");
+    map.query(To.l(3), To.l(4)).forEach(k -> p("%d -> %.10f", k, To.toDouble(map.get(k))));
+    in.nextLine();
+  }
+  
+  public static void lesson4_temporalunits()
+  {
+    l();
+    p("4: TEMPORAL UNITS");
+    p("");
+    p("Stremebase supports java.time.Instant with a millisecond precision.");
+    p("You can also use java.time.localDateTime.");
+    p("Zone information for localDateTime comes from DB.db.ZONE, which is currently: "+DB.db.ZONE);
+    p("");
+
+    p("Instants go by: ");
+    p("for (long key = 0; key < 10; key++) map.put(key, To.l(Instant.now()));");
+    p("map.commit();");
+    p("for (long key = 0; key < 10; key++) System.out.println(To.instant(map.get(key)).toString());");    
+   
+    for (long key = 0; key < 10; key++) map.put(key, To.l(Instant.now()));
+    map.commit();
+    for (long key = 0; key < 10; key++) System.out.println(To.instant(map.get(key)).toString());
+  
+    in.nextLine(); 
+    p("");
+    p("localDateTimes go by: ");
+    p("for (long key = 0; key < 100; key++) map.put(key, To.l(LocalDateTime.now()));");
+    p("map.commit();");
+    p("for (long key = 0; key < 100; key++) System.out.println(To.localDateTime(map.get(key)).toString());");    
+   
+    for (long key = 0; key < 100; key++) map.put(key, To.l(LocalDateTime.now()));
+    map.commit();
+    for (long key = 0; key < 100; key++) System.out.println(To.localDateTime(map.get(key)).toString());
+   
+    p("");
+    map.clear();
+    in.nextLine();
+  }
+  
+  public static void lesson5_strings()
+  {
+    l();
+    p("5: STRINGS");
+    p("");
+    p("Will be written later...");
     in.nextLine();
   }
     

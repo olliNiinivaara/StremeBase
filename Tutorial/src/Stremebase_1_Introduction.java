@@ -42,7 +42,7 @@ public class Stremebase_1_Introduction
   public static void welcome()
   {
     l();
-    p("Stremebase v.0.1 Tutorial - Chapter 1: Introduction");
+    p("Stremebase v.0.2 Tutorial - Chapter 1: Introduction");
     p("");
     p("Stremebase is pronounced as Streambase. The name reflects it's stream-oriented design and it's xstreme simplicity.");
     p("");
