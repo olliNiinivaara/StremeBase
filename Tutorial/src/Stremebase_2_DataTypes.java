@@ -1,10 +1,17 @@
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.SourceDataLine;
+
+import com.stremebase.map.ObjectMap;
 import com.stremebase.map.OneMap;
 import com.stremebase.base.DB;
 import com.stremebase.base.To;
+import com.stremebase.map.TextMap;
 
 
 public class Stremebase_2_DataTypes
@@ -24,18 +31,21 @@ public class Stremebase_2_DataTypes
     lesson3_doubles();
     lesson4_temporalunits();
     lesson5_strings();
+    lesson6_objectserialization();
     l();
-    p("Bye!");
+    p("That's all for now.");
+    p("Tutorial continues with Chapter 3: Relationships.");
+    p("See you there!");
   }
   
   public static void welcome()
   {
     l();
-    p("Stremebase v.0.2 Tutorial - Chapter 2: Supported Data Types");
+    p("Stremebase Tutorial - Chapter 2: Supported Data Types");
     p("");
     p("Under the hood Stremebase operates with longs (arrays of 64 bits).");
     p("Therefore any data type for which you can devise a bijection to longs is supported.");
-    p("And if the bijection is order-preserving, even index-based queries will work correctly.");
+    p("And if the bijection is order-preserving, even range queries will work correctly.");
     p("");
     p("For your convenience, there is a class called com.stremebase.base.To");
     p("It contains static functions for converting most common datatypes to longs and back.");
@@ -137,31 +147,34 @@ public class Stremebase_2_DataTypes
     p("(better not tamper with the bit at index 63)");
     p("");
     
-    p("long booleanArray = 0;");
     p("boolean b0 = true;");
     p("boolean b1 = false;");
     p("boolean b62 = true;");
-    p("map.put(1, booleanArray=To.l(b0, 0, booleanArray));");
-    p("map.put(1, booleanArray=To.l(b1, 1, booleanArray));");
-    p("map.put(1, booleanArray=To.l(b62, 62, booleanArray));");
+    p("long booleanArray = To.l(b0, 0, 0);");
+    p("booleanArray = To.l(b1, 1, booleanArray);");
+    p("booleanArray = To.l(b62, 62, booleanArray);");
+    p("map.put(1, booleanArray);");
     p("map.commit();");
-    p("b0 = To.toBoolean(map.get(1), 0);");
-    p("b1 = To.toBoolean(map.get(1), 1);");
-    p("b62 = To.toBoolean(map.get(1), 62);");
+    p("booleanArray = map.get(1);");
+    p("b0 = To.toBoolean(booleanArray, 0);");
+    p("b1 = To.toBoolean(booleanArray, 1);");
+    p("b62 = To.toBoolean(booleanArray, 62);");
     p("System.out.printf(\"%%b, %%b, %%b\", b0, b1, b62);");
    
     map.clear();
-    long booleanArray = 0;
     boolean b0 = true;
     boolean b1 = false;
     boolean b62 = true;
-    map.put(1, booleanArray=To.l(b0, 0, booleanArray));
-    map.put(1, booleanArray=To.l(b1, 1, booleanArray));
-    map.put(1, booleanArray=To.l(b62, 62, booleanArray));
+    long booleanArray = To.l(b0, 0, 0);
+    booleanArray = To.l(b1, 1, booleanArray);
+    booleanArray = To.l(b62, 62, booleanArray);
+    map.put(1, booleanArray);
     map.commit();
-    b0 = To.toBoolean(map.get(1), 0);
-    b1 = To.toBoolean(map.get(1), 1);
-    b62 = To.toBoolean(map.get(1), 62);
+    
+    booleanArray = map.get(1);
+    b0 = To.toBoolean(booleanArray, 0);
+    b1 = To.toBoolean(booleanArray, 1);
+    b62 = To.toBoolean(booleanArray, 62);
     System.out.printf("%b, %b, %b", b0, b1, b62);
     p("");
     p("");
@@ -256,10 +269,124 @@ public class Stremebase_2_DataTypes
   
   public static void lesson5_strings()
   {
+    map.clear();
+    
     l();
     p("5: STRINGS");
     p("");
-    p("Will be written later...");
+    p("In Stremebase strings are either words (terms, tokens) or texts (arrays of words).");
+    p("At this point we'll handle words, texts will be discussed later.");
+    p("");
+    p("String handling is case-sensitive, therefore convert all strings to lower (or upper) case.");
+    p("");
+    p("Putting strings is straightforward:");
+    p("map.put(1, To.l(\"smith\"));");
+    p("map.put(2, To.l(\"smithson\"));");
+    p("map.put(3, To.l(\"smithers\"));");
+    p("DB.db.commit();");
+    map.put(1, To.l("smith"));
+    map.put(2, To.l(")/(%¤#&/(&"));
+    map.put(3, To.l("smithson"));
+    map.put(4, To.l("smirgeli"));
+    map.put(5, To.l("smithers"));
+    DB.db.commit();
+    p("");  
+    System.out.println("You can get the value as String, which is convenient but slow: ");
+    p("System.out.println(\"1 -> \"+To.toString(map.get(1)));");
+    
+    System.out.println("1 -> "+To.toString(map.get(1)));
+    
+    p("");
+    System.out.println("Or, you can get the value to your StringBuilder: ");
+    p("StringBuilder string = new StringBuilder();");
+    p("To.toString(map.get(1), string);");
+    p("System.out.println(string.toString());");
+     
+    StringBuilder string = new StringBuilder();
+    To.toString(map.get(1), string);
+    System.out.println(string.toString());
+    
+    p("");
+    p("The conversion from strings to longs does not preserve alphabetical order.");
+    p("Therefore query ranges do not make sense.");
+    p("But you can still search for particular strings: ");
+    p("long sl = To.l(\"smith\", false); //false means that if word is not indexed, it will not be indexed and DB.NULL will be returned instead");
+    p("if (sl!=DB.NULL) map.query(sl, sl).forEach(key -> (System.out.println(key)));");
+    
+    long sl = To.l("smith", false); //false means that if word is not indexed, it will not be indexed and DB.NULL will be returned instead
+    if (sl!=DB.NULL) map.query(sl, sl).forEach(key -> (p("%d", key)));
+    
+    p("");
+    p("Furthermore, you can find all keys that contain string values that start with some string prefix.");
+    p("To find all keys with value starting with 'smit': ");
+    p("map.unionQuery(TextMap.wordsWithPrefix(\"smit\").toArray()).forEach(key -> (System.out.printf(\"%%d -> %%s%%n\", key, To.toString(map.get(key)))));");
+    map.unionQuery(TextMap.wordsWithPrefix("smit").toArray()).forEach(key -> (p("%d -> %s", key, To.toString(map.get(key)))));
+    p("");
+    in.nextLine();
+  }
+  
+  public static void lesson6_objectserialization()
+  {
+    l();
+    p("6: OBJECT SERIALIZATION");
+    p("");
+    p("Any serializable object can be persisted.");
+    p("But objects cannot be indexed.");
+    p("");
+    p("So far we have used OneMap; for objects, we'll use ObjectMap.");
+    p("");
+    p("");
+    p("ExampleClass example = new ExampleClass();");
+    p("example.wave = new byte[44100];");
+    p("...");
+    p("ObjectMap objectMap = new ObjectMap(\"objectMap\");");
+    p("objectMap.put(1, example);");
+    p("objectMap.commit();");
+    p("ExampleClass serializedObject = (ExampleClass) objectMap.get(1);");
+    p("serializedObject.playSound();");
+    p("");
+        
+    class ExampleClass implements Serializable
+    {
+      private static final long serialVersionUID = 1L;
+      byte[] wave;
+      
+      public void playSound()
+      {
+        AudioFormat af = new AudioFormat( (float )44100, 8, 1, true, false);
+        SourceDataLine sdl;
+        try
+        {
+          sdl = AudioSystem.getSourceDataLine( af );
+          sdl.open();
+        }
+        catch (Exception e)
+        {
+          p("Audio not supported.");
+          in.nextLine();
+          return;
+        }
+        sdl.start();
+        sdl.write(wave, 0, wave.length);
+        sdl.drain();
+        sdl.stop();
+      }
+    }
+        
+    ExampleClass example = new ExampleClass();
+    example.wave = new byte[44100];
+    for( int i = 0; i < 44100; i++ )
+    {
+      double angle = i / ( (float )44100 / 440 ) * 2.0 * Math.PI;
+      example.wave[i] = (byte )( Math.sin( angle ) * 100 );
+    }
+    
+    ObjectMap objectMap = new ObjectMap("objectMap");
+    objectMap.put(1, example);
+    objectMap.commit();
+    ExampleClass serializedObject = (ExampleClass) objectMap.get(1);
+    serializedObject.playSound();
+    
     in.nextLine();
   }
     

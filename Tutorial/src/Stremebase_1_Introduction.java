@@ -42,7 +42,7 @@ public class Stremebase_1_Introduction
   public static void welcome()
   {
     l();
-    p("Stremebase v.0.2 Tutorial - Chapter 1: Introduction");
+    p("Stremebase Tutorial - Chapter 1: Introduction");
     p("");
     p("Stremebase is pronounced as Streambase. The name reflects it's stream-oriented design and it's xstreme simplicity.");
     p("");
@@ -219,6 +219,11 @@ public class Stremebase_1_Introduction
     p("");
     p("If there's a big map under heavy querying, you can speed up things with an index.");
     p("You'll learn about indexing later on...");
+    p("");
+    
+    p("In addition to range query, there's also a query for particular values, called unionQuery:");
+    p("Select keys where value in {1, 3, 5} : entity_attribute.unionQuery(1, 3, 5)");
+    entity_attribute.unionQuery(1, 3, 5).forEach(key->p(key+"")); 
     in.nextLine();
   }
   
@@ -293,9 +298,9 @@ public class Stremebase_1_Introduction
       map.clear();
     }
     p("");
-    p("Note that while HashMap size is limited by Java heap size, OneMap size is limited by hard disk size.");
-    p("Also note that HashMap access order is random, while OneMap iterates the keys in ascending order");
-    p("You'll see performance benefits of this fact later when we shall calculate intersections of queries...");
+    p("Of course we were comparing apples and oranges;");
+    p("*Persistence by HashMap serialization would be extremely slow*");
+    p("*HashMap size is limited by Java heap size, OneMap size is limited by hard disk size*");
   }
   
   public static void recap()
