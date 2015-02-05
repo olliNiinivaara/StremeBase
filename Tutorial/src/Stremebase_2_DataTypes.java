@@ -11,6 +11,7 @@ import com.stremebase.map.ObjectMap;
 import com.stremebase.map.OneMap;
 import com.stremebase.base.DB;
 import com.stremebase.base.To;
+import com.stremebase.base.util.Lexicon;
 import com.stremebase.map.TextMap;
 
 
@@ -276,6 +277,8 @@ public class Stremebase_2_DataTypes
     p("");
     p("In Stremebase strings are either words (terms, tokens) or texts (arrays of words).");
     p("At this point we'll handle words, texts will be discussed later.");
+    p("All strings are globally handled with com.stremebase.base.util.Lexicon");
+    p("It offers static methods for accessing the lexicon (examples below)");
     p("");
     p("String handling is case-sensitive, therefore convert all strings to lower (or upper) case.");
     p("");
@@ -310,17 +313,17 @@ public class Stremebase_2_DataTypes
     p("The conversion from strings to longs does not preserve alphabetical order.");
     p("Therefore query ranges do not make sense.");
     p("But you can still search for particular strings: ");
-    p("long sl = To.l(\"smith\", false); //false means that if word is not indexed, it will not be indexed and DB.NULL will be returned instead");
+    p("long sl = Lexicon.getIfExists(\"smith\");");
     p("if (sl!=DB.NULL) map.query(sl, sl).forEach(key -> (System.out.println(key)));");
     
-    long sl = To.l("smith", false); //false means that if word is not indexed, it will not be indexed and DB.NULL will be returned instead
+    long sl = Lexicon.getIfExists("smith");
     if (sl!=DB.NULL) map.query(sl, sl).forEach(key -> (p("%d", key)));
     
     p("");
     p("Furthermore, you can find all keys that contain string values that start with some string prefix.");
     p("To find all keys with value starting with 'smit': ");
     p("map.unionQuery(TextMap.wordsWithPrefix(\"smit\").toArray()).forEach(key -> (System.out.printf(\"%%d -> %%s%%n\", key, To.toString(map.get(key)))));");
-    map.unionQuery(TextMap.wordsWithPrefix("smit").toArray()).forEach(key -> (p("%d -> %s", key, To.toString(map.get(key)))));
+    map.unionQuery(Lexicon.wordsWithPrefix("smit").toArray()).forEach(key -> (p("%d -> %s", key, To.toString(map.get(key)))));
     p("");
     in.nextLine();
   }

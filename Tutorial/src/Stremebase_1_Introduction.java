@@ -13,6 +13,7 @@ import java.util.Scanner;
 
 import com.stremebase.map.OneMap;
 import com.stremebase.base.DB;
+import com.stremebase.base.util.Streams;
 
 
 public class Stremebase_1_Introduction
@@ -33,7 +34,8 @@ public class Stremebase_1_Introduction
     lesson2_creatingAMap();
     lesson3_puttingValues();
     lesson4_gettingValues();
-    lesson5_onperformance();
+    lesson5_queryConjunctions();
+    lesson6_onperformance();
     recap();
     l();
     p("Bye!");
@@ -183,7 +185,7 @@ public class Stremebase_1_Introduction
     
     if (entity_attribute.getSize()==0)
     {
-      p("Because the map appears to be empty, lesson 4 ends here.");
+      p("Because the entity_attribute map appears to be empty, lesson 4 ends here.");
       in.nextLine();
       return;
     }
@@ -227,7 +229,55 @@ public class Stremebase_1_Introduction
     in.nextLine();
   }
   
-  public static void lesson5_onperformance()
+  public static void lesson5_queryConjunctions()
+  {
+    l();
+    p("5: QUERY CONJUNCTIONS");
+    p("");
+    p("You often need to query by qualifying two or more attributes ('AND-query').");
+    p("For this case, there's static method com.stremebase.base.util.Streams.intersection.");
+    p("It gets streams of keys (in ascending order) and outputs their intersection - fast!");
+    p("");
+    p("Example:");
+    p("Let's say that you want to retrieve entities on following conditions:");
+    p("Attribute 1 must be between 10100 and 10200");
+    p("Attribute 2 must be zero");
+    p("Attribute 3 must be divisible by 5");
+    p("");
+    p("And here's how to do it:");
+    p("");
+    p("Streams.intersection(");
+    p("  entity_attribute.query(100, 200),");
+    p("  entity_attribute2.unionQuery(0),");
+    
+    p("  entity_attribute3.keys().filter(key -> {return entity_attribute3.value()%%5==0;})).");
+    p(" forEach(key -> (System.out.printf(\"%%d -> %%d, %%d, %%d%%n\",");
+    p("  key, entity_attribute.get(key), entity_attribute2.get(key), entity_attribute3.get(key)))");
+    p(");");
+    
+    OneMap entity_attribute2 = new OneMap("entity_attribute2");
+    OneMap entity_attribute3 = new OneMap("entity_attribute3");
+    
+    for (long key = 1; key<1000; key++)
+    {
+      entity_attribute.put(key, key+10000);
+      entity_attribute2.put(key, key%3);
+      entity_attribute3.put(key, 1000-key);
+    }
+    DB.db.commit();
+    
+    Streams.intersection(
+      entity_attribute.query(10100, 10200),
+      entity_attribute2.unionQuery(0),
+      entity_attribute3.keys().filter(key -> {return entity_attribute3.value()%5==0;})).
+     forEach(key -> (System.out.printf("%d -> %d, %d, %d%n",
+      key, entity_attribute.get(key), entity_attribute2.get(key), entity_attribute3.get(key)))
+    );
+    
+    in.nextLine();
+  }
+  
+  public static void lesson6_onperformance()
   {
     l();
     p("5: ON PERFORMANCE");
