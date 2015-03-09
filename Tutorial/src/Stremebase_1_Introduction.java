@@ -18,17 +18,19 @@ import com.stremebase.base.util.Streams;
 
 public class Stremebase_1_Introduction
 {
-  
-  
+
+
   private static boolean persisted = false;  //try true also!
   private static long testsize = 10000000; 
   public static OneMap entity_attribute;
-  
+
   private static final Scanner in = new Scanner(System.in);
-  
-  
+
+
   public static void main(String[] args)
   {
+
+
     welcome();
     lesson1_startingTheDB();
     lesson2_creatingAMap();
@@ -40,7 +42,7 @@ public class Stremebase_1_Introduction
     l();
     p("Bye!");
   }
-  
+
   public static void welcome()
   {
     l();
@@ -62,7 +64,7 @@ public class Stremebase_1_Introduction
     p("OK? ALWAYS PRESS ENTER WHEN YOU ARE READY TO CONTINUE THE TUTORIAL");
     in.nextLine();    
   }
-  
+
   public static void lesson1_startingTheDB()
   {
     l();
@@ -76,13 +78,14 @@ public class Stremebase_1_Introduction
     p("To start Stremebase in in-memory mode, we call: DB.startDB(false);");
     p("To start Stremebase in persisted mode, you would call: DB.startDB(true);");
     p("");
-    
+
     DB.startDB(persisted);
     p("We just called DB.startDB(%b);", persisted);
-    
+    p("");
+    p("(end of lesson 1)");
     in.nextLine();      
   }
-  
+
   public static void lesson2_creatingAMap()
   {
     l();
@@ -98,28 +101,29 @@ public class Stremebase_1_Introduction
     p("To create a map called (say) entity_attribute, we now call: "); 
     p("LongMap entity_attribute = new OneMap(\"entity_attribute\");");
     p("");
-    
+
     entity_attribute = new OneMap("entity_attribute");
-    
+
     p("If you wondered, OneMap is a type of map that allows just one value per key.");
     p("You'll learn about more complex maps in following chapters...");
-    
+    p("");
+    p("(end of lesson 2)");
     in.nextLine();
   }
-  
+
   public static void lesson3_puttingValues()
   {
     long value = 1;
-    
+
     l();
     p("3: PUTTING VALUES");
     p("");
-    
+
     p("Let's start by checking, if entity_attribute contains an entry for value %d: ", value);
     p("if (entity_attribute.containsValue(%d))...;", value);
-    
+
     long key = entity_attribute.getLargestKey();
-    
+
     if (entity_attribute.containsValue(value)) p("An entry already exists, we shall not create a duplicate.%n");
     else
     {
@@ -162,7 +166,7 @@ public class Stremebase_1_Introduction
     for (long l = 0; l<100; l++) entity_attribute.put(++key, l % 20);
     entity_attribute.commit();
     p("Committed!");
-    
+
     if (DB.isPersisted())
     {
       p("");
@@ -170,10 +174,11 @@ public class Stremebase_1_Introduction
       p("you can get the location of the database on disk:");
       p("DB.db.DIRECTORY: "+DB.db.DIRECTORY);
     }  
-    
+    p("");
+    p("(end of lesson 3)");
     in.nextLine();      
   }
-  
+
   public static void lesson4_gettingValues()
   {
     l();
@@ -182,53 +187,55 @@ public class Stremebase_1_Introduction
     p("Let's start by getting the size of our map: entity_attribute.getSize();");    
     p("There are currently %d entries", entity_attribute.getSize());
     p("");
-    
+
     if (entity_attribute.getSize()==0)
     {
       p("Because the entity_attribute map appears to be empty, lesson 4 ends here.");
       in.nextLine();
       return;
     }
-    
+
     p("We can stream all keys in ascending order with: entity_attribute.keys()");
     entity_attribute.keys().forEach(key->System.out.print(key+" "));
     p("");p("");
-    
+
     p("We get the value associated with a key with: entity_attribute.get(key);");
     p("Let's get them all: ");
     entity_attribute.keys().forEach(key->System.out.print(key+"->"+entity_attribute.get(key)+" "));
     p("");p("");
-    
+
     p("If you try to get a value for a nonexistent key, you'll get value DB.NULL, which is %d", DB.NULL);
     p("Let's try: entity_attribute.get(56745635654l) = %d", entity_attribute.get(56745635654l));
     p("");
-    
+
     p("The most important operation offered by Stremebase is query.");
     p("Queries select keys where a value exists between a defined range.");
     p("General syntax is: map.query(lowestValue, highestValue)");
     p("Examples: ");
-    
+
     p("Select keys where value < 3 : entity_attribute.query(Long.MIN_VALUE, 2)");
     entity_attribute.query(Long.MIN_VALUE, 2).forEach(key->p(key+""));
     p("");
-    
+
     p("Select keys where 12 <= value <= 15 : entity_attribute.query(12, 15)");
     entity_attribute.query(12, 15).forEach(key->p(key+""));
     p("");
-    
+
     p("Select keys where value = 1 : entity_attribute.query(1, 1)");
     entity_attribute.query(1, 1).forEach(key->p(key+""));
     p("");
     p("If there's a big map under heavy querying, you can speed up things with an index.");
     p("You'll learn about indexing later on...");
     p("");
-    
+
     p("In addition to range query, there's also a query for particular values, called unionQuery:");
     p("Select keys where value in {1, 3, 5} : entity_attribute.unionQuery(1, 3, 5)");
-    entity_attribute.unionQuery(1, 3, 5).forEach(key->p(key+"")); 
+    entity_attribute.unionQuery(1, 3, 5).forEach(key->p(key+""));
+    p("");
+    p("(end of lesson 4)");
     in.nextLine();
   }
-  
+
   public static void lesson5_queryConjunctions()
   {
     l();
@@ -249,15 +256,15 @@ public class Stremebase_1_Introduction
     p("Streams.intersection(");
     p("  entity_attribute.query(100, 200),");
     p("  entity_attribute2.unionQuery(0),");
-    
+
     p("  entity_attribute3.keys().filter(key -> {return entity_attribute3.value()%%5==0;})).");
     p(" forEach(key -> (System.out.printf(\"%%d -> %%d, %%d, %%d%%n\",");
     p("  key, entity_attribute.get(key), entity_attribute2.get(key), entity_attribute3.get(key)))");
     p(");");
-    
+
     OneMap entity_attribute2 = new OneMap("entity_attribute2");
     OneMap entity_attribute3 = new OneMap("entity_attribute3");
-    
+
     for (long key = 1; key<1000; key++)
     {
       entity_attribute.put(key, key+10000);
@@ -265,22 +272,23 @@ public class Stremebase_1_Introduction
       entity_attribute3.put(key, 1000-key);
     }
     DB.db.commit();
-    
+
     Streams.intersection(
-      entity_attribute.query(10100, 10200),
-      entity_attribute2.unionQuery(0),
-      entity_attribute3.keys().filter(key -> {return entity_attribute3.value()%5==0;})).
-     forEach(key -> (System.out.printf("%d -> %d, %d, %d%n",
-      key, entity_attribute.get(key), entity_attribute2.get(key), entity_attribute3.get(key)))
-    );
-    
+        entity_attribute.query(10100, 10200),
+        entity_attribute2.unionQuery(0),
+        entity_attribute3.keys().filter(key -> {return entity_attribute3.value()%5==0;})).
+        forEach(key -> (System.out.printf("%d -> %d, %d, %d%n",
+            key, entity_attribute.get(key), entity_attribute2.get(key), entity_attribute3.get(key)))
+            );
+    p("");
+    p("(end of lesson 5)");
     in.nextLine();
   }
-  
+
   public static void lesson6_onperformance()
   {
     l();
-    p("5: ON PERFORMANCE");
+    p("6: ON PERFORMANCE");
     p("");
     p("I hope you are by now starting to appreciate the usability of the Stremebase API.");
     p("But maybe you wonder: Is Stremebase performant?");
@@ -289,9 +297,11 @@ public class Stremebase_1_Introduction
     p("");
     testHashMap();
     testOneMap();
+    p("");
+    p("(end of lesson 6)");
     in.nextLine();   
   }
-  
+
   protected static void testHashMap()
   {    
     p("Putting %d entries to a HashMap", testsize);
@@ -304,7 +314,7 @@ public class Stremebase_1_Introduction
     long end = System.currentTimeMillis();
     p("Finished!");
     p("Put time for a HashMap: %d milliseconds", end-start);    
-    
+
     p("");
     p("Getting all %d entries from a HashMap", testsize);
     System.gc();
@@ -316,7 +326,7 @@ public class Stremebase_1_Introduction
     p("Get time for a HashMap: %d milliseconds", end-start);    
     p("");
   }
-  
+
   protected static void testOneMap()
   {    
     p("Putting %d entries to a OneMap", testsize);
@@ -330,7 +340,7 @@ public class Stremebase_1_Introduction
     long end = System.currentTimeMillis();
     p("Finished!");
     p("Put time for a OneMap: %d milliseconds", end-start);    
-    
+
     p("");
     p("Getting all %d entries from a OneMap", testsize);
     System.gc();
@@ -341,7 +351,7 @@ public class Stremebase_1_Introduction
     p("Finished!");
     p("Get time for a OneMap: %d milliseconds", end-start);    
     p("");
-    
+
     if (DB.isPersisted())
     {
       p("Last but not least, let's remove the test data from your hard disk: map.clear();");
@@ -352,11 +362,11 @@ public class Stremebase_1_Introduction
     p("*Persistence by HashMap serialization would be extremely slow*");
     p("*HashMap size is limited by Java heap size, OneMap size is limited by hard disk size*");
   }
-  
+
   public static void recap()
   {
     l();
-    p("6: RECAP");
+    p("7: RECAP");
     p("This is the end of the introduction tutorial.");
     p("Thank you for your attention.");
     p("The title of chapter 2 is: Supported data types");
@@ -364,7 +374,7 @@ public class Stremebase_1_Introduction
     p("");
     p("Here's a complete method template for you to experiment with: ");
     p("");
-        
+
     p("DB.startDB(false);");
     p("OneMap map = new OneMap(\"AVeryUniqueName\");");
     p("map.put(map.getLargestKey()+1, 1);");
@@ -398,13 +408,13 @@ public class Stremebase_1_Introduction
     System.out.println();
     map.clear();
   }
-    
-  
+
+
   private static void p(String format, Object... args)
   {
     System.out.printf(format+"%n", args);
   }
-  
+
   private static void l()
   {
     System.out.println("\n---------------------------------------------------------------");

@@ -12,16 +12,15 @@ import com.stremebase.map.OneMap;
 import com.stremebase.base.DB;
 import com.stremebase.base.To;
 import com.stremebase.base.util.Lexicon;
-import com.stremebase.map.TextMap;
 
 
 public class Stremebase_2_DataTypes
 {
   public static OneMap map;
-  
+
   private static final Scanner in = new Scanner(System.in);
-  
-  
+
+
   public static void main(String[] args)
   {
     DB.startDB(false);
@@ -34,11 +33,11 @@ public class Stremebase_2_DataTypes
     lesson5_strings();
     lesson6_objectserialization();
     l();
-    p("That's all for now.");
-    p("Tutorial continues with Chapter 3: Relationships.");
-    p("See you there!");
+    p("Case closed.");
+    p("Next chapter is about multivalued attributes: arrays, lists and sets.");
+    p("Keep going!");
   }
-  
+
   public static void welcome()
   {
     l();
@@ -69,7 +68,7 @@ public class Stremebase_2_DataTypes
     p("(Press ENTER when ready...)");
     in.nextLine();
   }
-  
+
   public static void lesson1_integers()
   {    
     l();
@@ -136,9 +135,10 @@ public class Stremebase_2_DataTypes
     bv = (byte) map.get(5);
     System.out.printf("%d", bv);
     p("");
+    p("(end of lesson 1)");
     in.nextLine();      
   }
-  
+
   public static void lesson2_booleans()
   {
     l();
@@ -147,7 +147,7 @@ public class Stremebase_2_DataTypes
     p("Because 64 bits is smallest addressable unit, we can handle 63 booleans in one shot.");
     p("(better not tamper with the bit at index 63)");
     p("");
-    
+
     p("boolean b0 = true;");
     p("boolean b1 = false;");
     p("boolean b62 = true;");
@@ -161,7 +161,7 @@ public class Stremebase_2_DataTypes
     p("b1 = To.toBoolean(booleanArray, 1);");
     p("b62 = To.toBoolean(booleanArray, 62);");
     p("System.out.printf(\"%%b, %%b, %%b\", b0, b1, b62);");
-   
+
     map.clear();
     boolean b0 = true;
     boolean b1 = false;
@@ -171,7 +171,7 @@ public class Stremebase_2_DataTypes
     booleanArray = To.l(b62, 62, booleanArray);
     map.put(1, booleanArray);
     map.commit();
-    
+
     booleanArray = map.get(1);
     b0 = To.toBoolean(booleanArray, 0);
     b1 = To.toBoolean(booleanArray, 1);
@@ -192,10 +192,11 @@ public class Stremebase_2_DataTypes
     p("map.keyset().filter(key -> ((map.get(key) & falseMask) == 0)).forEach(key -> p(\"%%d\", key));");
     final long falseMask = To.mask(1);    
     map.keyset().filter(key -> ((map.get(key) & falseMask) == 0)).forEach(key -> p("%d", key));
-    
+    p("");
+    p("(end of lesson 2)");
     in.nextLine();
   }
-  
+
   public static void lesson3_doubles()
   {
     l();
@@ -230,9 +231,11 @@ public class Stremebase_2_DataTypes
     p("Also queries work as expected: ");
     p("map.query(To.l(3), To.l(4)).forEach(k -> System.out.printf(\"%%d -> %%f.10f\", k, To.toDouble(map.get(k))));");
     map.query(To.l(3), To.l(4)).forEach(k -> p("%d -> %.10f", k, To.toDouble(map.get(k))));
+    p("");
+    p("(end of lesson 3)");
     in.nextLine();
   }
-  
+
   public static void lesson4_temporalunits()
   {
     l();
@@ -247,31 +250,33 @@ public class Stremebase_2_DataTypes
     p("for (long key = 0; key < 10; key++) map.put(key, To.l(Instant.now()));");
     p("map.commit();");
     p("for (long key = 0; key < 10; key++) System.out.println(To.instant(map.get(key)).toString());");    
-   
+
     for (long key = 0; key < 10; key++) map.put(key, To.l(Instant.now()));
     map.commit();
     for (long key = 0; key < 10; key++) System.out.println(To.instant(map.get(key)).toString());
-  
+
     in.nextLine(); 
     p("");
     p("localDateTimes go by: ");
     p("for (long key = 0; key < 100; key++) map.put(key, To.l(LocalDateTime.now()));");
     p("map.commit();");
     p("for (long key = 0; key < 100; key++) System.out.println(To.localDateTime(map.get(key)).toString());");    
-   
+
     for (long key = 0; key < 100; key++) map.put(key, To.l(LocalDateTime.now()));
     map.commit();
     for (long key = 0; key < 100; key++) System.out.println(To.localDateTime(map.get(key)).toString());
-   
+
     p("");
     map.clear();
+    p("");
+    p("(end of lesson 4)");
     in.nextLine();
   }
-  
+
   public static void lesson5_strings()
   {
     map.clear();
-    
+
     l();
     p("5: STRINGS");
     p("");
@@ -296,38 +301,39 @@ public class Stremebase_2_DataTypes
     p("");  
     System.out.println("You can get the value as String, which is convenient but slow: ");
     p("System.out.println(\"1 -> \"+To.toString(map.get(1)));");
-    
+
     System.out.println("1 -> "+To.toString(map.get(1)));
-    
+
     p("");
     System.out.println("Or, you can get the value to your StringBuilder: ");
     p("StringBuilder string = new StringBuilder();");
     p("To.toString(map.get(1), string);");
     p("System.out.println(string.toString());");
-     
+
     StringBuilder string = new StringBuilder();
     To.toString(map.get(1), string);
     System.out.println(string.toString());
-    
+
     p("");
     p("The conversion from strings to longs does not preserve alphabetical order.");
     p("Therefore query ranges do not make sense.");
     p("But you can still search for particular strings: ");
     p("long sl = Lexicon.getIfExists(\"smith\");");
     p("if (sl!=DB.NULL) map.query(sl, sl).forEach(key -> (System.out.println(key)));");
-    
+
     long sl = Lexicon.getIfExists("smith");
     if (sl!=DB.NULL) map.query(sl, sl).forEach(key -> (p("%d", key)));
-    
+
     p("");
     p("Furthermore, you can find all keys that contain string values that start with some string prefix.");
     p("To find all keys with value starting with 'smit': ");
     p("map.unionQuery(TextMap.wordsWithPrefix(\"smit\").toArray()).forEach(key -> (System.out.printf(\"%%d -> %%s%%n\", key, To.toString(map.get(key)))));");
     map.unionQuery(Lexicon.wordsWithPrefix("smit").toArray()).forEach(key -> (p("%d -> %s", key, To.toString(map.get(key)))));
     p("");
+    p("(end of lesson 5)");
     in.nextLine();
   }
-  
+
   public static void lesson6_objectserialization()
   {
     l();
@@ -340,7 +346,7 @@ public class Stremebase_2_DataTypes
     p("");
     p("");
     p("ExampleClass example = new ExampleClass();");
-    p("example.wave = new byte[44100];");
+    p("example.wave = new byte[44100]; // we shall persist sound");
     p("...");
     p("ObjectMap objectMap = new ObjectMap(\"objectMap\");");
     p("objectMap.put(1, example);");
@@ -348,15 +354,15 @@ public class Stremebase_2_DataTypes
     p("ExampleClass serializedObject = (ExampleClass) objectMap.get(1);");
     p("serializedObject.playSound();");
     p("");
-        
+
     class ExampleClass implements Serializable
     {
       private static final long serialVersionUID = 1L;
       byte[] wave;
-      
+
       public void playSound()
       {
-        AudioFormat af = new AudioFormat( (float )44100, 8, 1, true, false);
+        AudioFormat af = new AudioFormat( 44100, 8, 1, true, false);
         SourceDataLine sdl;
         try
         {
@@ -375,29 +381,31 @@ public class Stremebase_2_DataTypes
         sdl.stop();
       }
     }
-        
+
     ExampleClass example = new ExampleClass();
-    example.wave = new byte[44100];
+    example.wave = new byte[44100];  //we shall persist sound
     for( int i = 0; i < 44100; i++ )
     {
       double angle = i / ( (float )44100 / 440 ) * 2.0 * Math.PI;
       example.wave[i] = (byte )( Math.sin( angle ) * 100 );
     }
-    
+
     ObjectMap objectMap = new ObjectMap("objectMap");
     objectMap.put(1, example);
     objectMap.commit();
     ExampleClass serializedObject = (ExampleClass) objectMap.get(1);
     serializedObject.playSound();
-    
+
     in.nextLine();
+    p("");
+    p("(end of lesson 6)");
   }
-    
+
   private static void p(String format, Object... args)
   {
     System.out.printf(format+"%n", args);
   }
-  
+
   private static void l()
   {
     System.out.println("\n---------------------------------------------------------------");
