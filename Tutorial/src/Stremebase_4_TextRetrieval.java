@@ -53,7 +53,7 @@ public class Stremebase_4_TextRetrieval
     {
       p("");
       p("Enter path to a directory with lots of .txt files: ");
-      String path = "/home/olli/Data/rfc";//in.nextLine();
+      String path = in.nextLine();
       String[] files = new File(path).list();
       if (files==null)
       {
@@ -66,7 +66,6 @@ public class Stremebase_4_TextRetrieval
       textIndex.commit();
     }
     query(textIndex);
-    //textIndex.clear();
   }
 
   public static void index(TextIndex textIndex, String path, String[] files)
@@ -95,7 +94,6 @@ public class Stremebase_4_TextRetrieval
       }
       docs++;
       p(docs+": "+name);
-      if (docs==1500) break;
     }
     p(docs+" documents indexed.");
   }
