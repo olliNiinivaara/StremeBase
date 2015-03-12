@@ -184,7 +184,7 @@ public class Stremebase_3_MultiValuedAttributes
     p("");
     p("This time with a SetMap.MULTISET flag: ");
     p("SetMap multiSet = new SetMap(\"multiset\", 10, SetMap.MULTISET, false);");
-    SetMap multiSet = new SetMap("multiset", 10, SetMap.MULTISET, false);
+    SetMap multiSet = new SetMap("multiset", SetMap.MULTISET, false);
     p("multiSet.put(1, 500);");
     multiSet.put(1, 500);
     p("multiSet.put(1, 500);");
@@ -261,7 +261,7 @@ public class Stremebase_3_MultiValuedAttributes
     -> heerlen -> bonn -> aachen -> epen -> kanne -> maastricht
      */
 
-    SetMap map = new SetMap("map", 10, SetMap.ATTRIBUTEDSET, false);
+    SetMap map = new SetMap("map", SetMap.ATTRIBUTEDSET, false);
     map.put(new long[][] {{0, 1, 29}, {0, 2, 20}, {0, 3, 21}, {0, 4, 16}, {0, 5, 31}, {0, 6, 100}, {0, 7, 12}, {0, 8, 4}, {0, 9, 21}, {0, 10, 18}});
     map.put(new long[][] {{1, 0, 29}, {1, 2, 15}, {1, 3, 29}, {1, 4, 28}, {1, 5, 40}, {1, 6, 72}, {1, 7, 21}, {1, 8, 29}, {1, 9, 41}, {1, 10, 12}});
     map.put(new long[][] {{2, 0, 20}, {2, 1, 15}, {2, 3, 15}, {2, 4, 14}, {2, 5, 25}, {2, 6, 81}, {2, 7, 9}, {2, 8, 23}, {2, 9, 27}, {2, 10, 13}});

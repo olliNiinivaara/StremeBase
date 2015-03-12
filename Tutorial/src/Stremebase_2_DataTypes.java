@@ -57,7 +57,7 @@ public class Stremebase_2_DataTypes
     p("java.time.Instant: with a millisecond precision");
     p("java.time.localDateTime: Instant with a zone information from DB.db.ZONE");
     p("java.lang.String: no size limits");
-    p("java.lang.StringBuilder: full text documents can be indexed and searched (not covered in this chapter)");
+    p("java.lang.StringBuilder: full text documents can be indexed and searched (not covered here, but in chapter 4)");
     p("");
     p("If you cannot figure out how to map a datatype to long (some BLOB maybe),");
     p("you can create a map with serializable objects as values,");
@@ -281,7 +281,7 @@ public class Stremebase_2_DataTypes
     p("5: STRINGS");
     p("");
     p("In Stremebase strings are either words (terms, tokens) or texts (arrays of words).");
-    p("At this point we'll handle words, texts will be discussed later.");
+    p("At this point we'll handle words, texts will be discussed in chapter 4.");
     p("All strings are globally handled with com.stremebase.base.util.Lexicon");
     p("It offers static methods for accessing the lexicon (examples below)");
     p("");
