@@ -50,8 +50,7 @@ public class Stremebase_3_MultiValuedAttributes
     p("1: ARRAYMAP");
     p("");
     p("Arraymap lets you associate a fixed number of values per key.");
-    p("Storing all non-queryable values to same arraymap is a very efficient trick.");
-    p("However, querying an arrayMap would only make sense when the values are of the same type.");
+    p("I highly recommend that you pack non-key attributes to an arraymap (instead of using separate OneMap for each.");
     p("");
     p("Here is an example of how to pack many values to one arraymap: ");
 
@@ -81,22 +80,27 @@ public class Stremebase_3_MultiValuedAttributes
     }
     p("arrayMap.commit();");
     arrayMap.commit();
+
     p("");
-    p("Now we can loop through the arraymap ");
-    p("and print entries where ODDITY-attribute is 1: ");
-    p("arrayMap.keys().forEach(key ->");
+    p("Now we print entries where ODDITY-attribute is 1.");
+    p("ArrayMap has two methods for querying over values of a single cell:");
+    p("queryByCell and unionQueryByCell.");
+    p("");
+
+    p("arrayMap.queryByCell(ODDITY, 1, 1).forEach(key ->");
     p("{");
     p(" arrayMap.get(key, values);");
-    p(" if (values[ODDITY]==1) System.out.printf(\"Entity '%%s' has some odd value %%d and a timestamp %%s%%n\",");
-    p("     To.toString(values[NAME]), values[SOMEVALUE], To.instant(values[TIMESTAMP]).toString()");
-    p("");
+    p(" System.out.printf(\"Entity '%%s' has some odd value %%d and a timestamp %%s%%n\",");
+    p("  To.toString(values[NAME]), values[SOMEVALUE], To.instant(values[TIMESTAMP]).toString()");
     p("});");
-    arrayMap.keys().forEach(key ->
+
+    arrayMap.queryByCell(ODDITY, 1, 1).forEach(key ->
     {
       arrayMap.get(key, values);
-      if (values[ODDITY]==1) System.out.printf("Entity '%s' has some odd value %d and a timestamp %s%n",
+      System.out.printf("Entity '%s' has some odd value %d and a timestamp %s%n",
           To.toString(values[NAME]), values[SOMEVALUE], To.instant(values[TIMESTAMP]).toString());
     });
+
     p("");
     p("(end of lesson 1)");
     in.nextLine();

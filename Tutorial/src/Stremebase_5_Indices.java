@@ -22,8 +22,9 @@ public class Stremebase_5_Indices
     lesson4_many_to_many();
     lesson5_many_to_multimany();
     l();
+    p("END OF TUTORIAL"); 
     p("Now you have learned the basic features of Stremebase.");
-    p("Chapter 6 presents a complete database example.");
+    p("Please consult JavaDoc and source code for further reference.");
   }
 
   public static void welcome()
@@ -60,61 +61,57 @@ public class Stremebase_5_Indices
     p("It is meant for indexing a OneMap or one cell of an ArrayMap.");
     p("");
 
-    p("Here is a simple comparison of insertion and query speeds with and without a one-to-one index:");
+    p("Here is a simple comparison of query speeds with and without a one-to-one index:");
     p("");
 
     final long[] foo = new long[1];
     long start;
 
-    OneMap without = new OneMap("onetoone_without");
-    long without_insert;
-    long without_query;
+    OneMap oneMap = new OneMap("onemap");
 
-    System.gc();
+    long without_insert;
     p("1000000 inserts without an index (wait)...");
+    System.gc();
     start = System.currentTimeMillis();    
-    for (int i=0; i<1000000; i++) without.put(i, i-500000);
-    without.commit();
+    for (int i=0; i<1000000; i++) oneMap.put(i, i-500000);
+    oneMap.commit();
     without_insert = System.currentTimeMillis()-start;
     p("time: "+without_insert+" ms");
 
+    long without_query;
     p("200 queries without an index (wait)...");
-    start = System.currentTimeMillis();    
-    for (int i=0; i<200; i++) without.unionQuery(i).forEach(key -> foo[0]+=key);
-    without_query = System.currentTimeMillis()-start;
-    p("time: "+(without_query)+" ms");
-
-    without.clear();
-
-    OneMap with = new OneMap("onetoone_with");
-    with.addIndex(DB.ONE_TO_ONE);
-    long with_insert;
-    long with_query;
-
-    p("");
     System.gc();
-    p("1000000 inserts with an index (wait)...");
     start = System.currentTimeMillis();    
-    for (int i=0; i<1000000; i++) with.put(i, i-500000);
-    with.commit();
-    with_insert = System.currentTimeMillis()-start;
-    p("time: "+with_insert+" ms");
+    for (int i=0; i<200; i++) oneMap.unionQuery(i).forEach(key -> foo[0]+=key);
+    without_query = System.currentTimeMillis()-start;
+    p("time: "+without_query+" ms");
 
-    p("200 queries with an index (wait)...");
+    long indextime;
+    p("");
+    p("Add an index...");
+    System.gc();
     start = System.currentTimeMillis();    
-    for (int i=0; i<200; i++) with.unionQuery(i).forEach(key -> foo[0]+=key);
+    oneMap.addIndex(DB.ONE_TO_ONE);
+    indextime = System.currentTimeMillis()-start;
+    p("time: "+indextime+" ms");
+
+    long with_query;
+    foo[0] = 0;
+    p("200 queries with an index...");
+    System.gc();
+    start = System.currentTimeMillis();    
+    for (int i=0; i<200; i++) oneMap.unionQuery(i).forEach(key -> foo[0]+=key);
     with_query = System.currentTimeMillis()-start;
     p("time: "+(with_query)+" ms");
 
-    with.clear();
-
-    if (without_insert == 0) without_insert = 1;
-    if (with_query == 0) with_query = 1;
-
     p("");
-    p("So, inserting with an index was about "+(with_insert/without_insert)+" times slower, ");
-    p("But querying  with an index was about "+(without_query/with_query)+  " times faster! ");
+    p("So, querying  with an index was about "+(without_query/with_query)+  " times faster! ");
     p("");
+    p("A little trick: if you don't need indexed query results sorted by key (no query intersections),");
+    p("you can tune performance by calling map.setIndexQueryIsSorted(false).");
+    p("One-To-One and One-To-Many queries are then sorted by value, which may also be useful sometimes.");
+    p("");
+
     p("(end of lesson 1)");
     in.nextLine();
   }

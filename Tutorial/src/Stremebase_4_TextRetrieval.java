@@ -49,7 +49,7 @@ public class Stremebase_4_TextRetrieval
 
     l();
     p("TEXT RETRIEVAL EXAMPLE");
-    if (!DB.db.exists())
+    if (!DB.db.existsOnDisk())
     {
       p("");
       p("Enter path to a directory with lots of .txt files: ");

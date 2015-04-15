@@ -7,6 +7,7 @@
     <meta name="description" content="Stremebase : An embeddable multimodel storage engine with java 8 streams api -based interface.">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+<script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=desert"></script>
 
     <title>Stremebase</title>
   </head>
@@ -20,12 +21,6 @@
 
           <h1 id="project_title">Stremebase</h1>
           <h2 id="project_tagline">A low level embeddable multi-model storage engine tightly coupled with a high level java 8 streams api compliant interface.</h2>
-
-            <!--section id="downloads">
-              <!--a class="zip_download_link" href="https://github.com/olliNiinivaara/StremeBase/zipball/master">Download this project as a .zip file</a-->
-              <!--a class="tar_download_link" href="https://github.com/olliNiinivaara/StremeBase/tarball/master">Download this project as a tar.gz file</a>
-              <a class="jar_download_link" href="https://github.com/olliNiinivaara/StremeBase/stremebase.jar">Download the jar file</a>
-            </section-->
         </header>
     </div>
 
@@ -33,16 +28,18 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         
-<!--a id="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages" aria-hidden="true"><span class="octicon octicon-link"></span></a>Welcome to StremeBase home.</h3-->
+<pre class="prettyprint">
+import com.stremebase.base.DB;
+import com.stremebase.map.OneMap;
 
-<p>*Under Construction*</p>
+DB.startDB(true);
 
-<pre><code>
+OneMap map = new OneMap("map");
 long key = map.getLargestKey();
 for (long i=0; i<100000; i++) map.put(++key, i%100);
 map.commit();
 map.query(47, 58).forEach(key->printf("%d->%d", key, map.get(key));
-</code></pre>
+</pre>
 
 <h3>
 Getting Started  
@@ -54,8 +51,8 @@ start with <a href="https://raw.githubusercontent.com/olliNiinivaara/Stremebase/
 <p>4. Study the <a href="http://olliniinivaara.github.io/Stremebase/JavaDoc/">javadocs</a></p>
 
 <h3>
-<a id="support" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-<p>Having trouble with Stremebase? Contact Olli and he’ll help you sort it out.</p>
+<a id="support" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support</h3>
+<p>In all matters, please contact me (Olli Niinivaara) at gmail.</p>
 
 
       </section>

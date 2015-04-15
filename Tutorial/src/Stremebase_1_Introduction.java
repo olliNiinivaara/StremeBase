@@ -50,16 +50,12 @@ public class Stremebase_1_Introduction
     p("");
     p("Stremebase is pronounced as Streambase. The name reflects it's stream-oriented design and it's xstreme simplicity.");
     p("");
-    p("Stremebase is (almost) all about maps.");
+    p("Stremebase is about maps.");
     p("A map associates keys with values (it's a key value store).");
-    p("A key is a unique identifier for entity instances (objects).");
-    p("In practice you'll always assign keys by just choosing the next unused number available.");
-    p("A value is an attribute for a class of entities. You'll learn about supported data types later.");
-    p("You can think that a map represents one column - stremebase is a column-oriented database.");
-    p("In graph db parlance, a map represents a property.");
-    p("");
-    p("Stremebase is simple: it does not handle entities (\"tables\" or \"vertices\")");
-    p("(However it can handle relationships - Stremebase is a graph database - but let's skip that for now...)");
+    p("A key is a unique identifier for instances (objects) of a class of entities.");
+    p("Values in a map are an attribute for a class of entities.");
+    p("Attributes that have keys as values represent relationships between entities.");
+    p("Attributes that have multiple values per key are multi-valued attributes.");
     p("");
     p("OK? ALWAYS PRESS ENTER WHEN YOU ARE READY TO CONTINUE THE TUTORIAL");
     in.nextLine();    
@@ -70,13 +66,13 @@ public class Stremebase_1_Introduction
     l();
     p("1: STARTING THE DB");
     p("");
-    p("Stremebase can act as an in-memory store (like redis) or as a database that is persisted to disk (like SQLite).");
+    p("Stremebase can act as an in-memory store or as a database that is persisted to disk.");
     p("You can develop your information model in in-memory mode and switch to persisted mode when it's stable.");
     p("");
     p("Starting the DB is the first thing your program must do. Otherwise you would run into some very strange exceptions...");
     p("");
-    p("To start Stremebase in in-memory mode, we call: DB.startDB(false);");
-    p("To start Stremebase in persisted mode, you would call: DB.startDB(true);");
+    p("To start Stremebase in in-memory mode, call: DB.startDB(false);");
+    p("To start Stremebase in persisted mode, call: DB.startDB(true);");
     p("");
 
     DB.startDB(persisted);
@@ -104,7 +100,7 @@ public class Stremebase_1_Introduction
 
     entity_attribute = new OneMap("entity_attribute");
 
-    p("If you wondered, OneMap is a type of map that allows just one value per key.");
+    p("OneMap is a type of map (a data structure) that allows just one value per key.");
     p("You'll learn about more complex maps in following chapters...");
     p("");
     p("(end of lesson 2)");
@@ -124,7 +120,7 @@ public class Stremebase_1_Introduction
 
     long key = entity_attribute.getLargestKey();
 
-    if (entity_attribute.containsValue(value)) p("An entry already exists, we shall not create a duplicate.%n");
+    if (entity_attribute.containsValue(value)) p("An entry already exists, we shall not create a duplicate.%n"); 
     else
     {
 
@@ -132,7 +128,6 @@ public class Stremebase_1_Introduction
       p("");
       p("To generate a new key, we first get the largest key in the map:");
       p("long key = entity_attribute.getLargestKey();");
-
 
 
       p("");
@@ -170,8 +165,8 @@ public class Stremebase_1_Introduction
     if (DB.isPersisted())
     {
       p("");
-      p("Since you are running the tutorial in persistent mode, it is important to know how");
-      p("you can get the location of the database on disk:");
+      p("Btw, since you are running the tutorial in persistent mode, ");
+      p("the location of the database on disk is: ");
       p("DB.db.DIRECTORY: "+DB.db.DIRECTORY);
     }  
     p("");
@@ -225,7 +220,7 @@ public class Stremebase_1_Introduction
     entity_attribute.query(1, 1).forEach(key->p(key+""));
     p("");
     p("If there's a big map under heavy querying, you can speed up things with an index.");
-    p("You'll learn about indexing later on...");
+    p("You'll learn about indexing in last chapter of the tutorial (Chapter 5).");
     p("");
 
     p("In addition to range query, there's also a query for particular values, called unionQuery:");
@@ -243,7 +238,7 @@ public class Stremebase_1_Introduction
     p("");
     p("You often need to query by qualifying two or more attributes ('AND-query').");
     p("For this case, there's static method com.stremebase.base.util.Streams.intersection.");
-    p("It gets streams of keys (in ascending order) and outputs their intersection - fast!");
+    p("It gets streams of keys (in ascending order) and outputs their intersection");
     p("");
     p("Example:");
     p("Let's say that you want to retrieve entities on following conditions:");
@@ -258,7 +253,7 @@ public class Stremebase_1_Introduction
     p("  entity_attribute2.unionQuery(0),");
 
     p("  entity_attribute3.keys().filter(key -> {return entity_attribute3.value()%%5==0;})).");
-    p(" forEach(key -> (System.out.printf(\"%%d -> %%d, %%d, %%d%%n\",");
+    p("  forEach(key -> (System.out.printf(\"%%d -> %%d, %%d, %%d%%n\",");
     p("  key, entity_attribute.get(key), entity_attribute2.get(key), entity_attribute3.get(key)))");
     p(");");
 
@@ -290,8 +285,7 @@ public class Stremebase_1_Introduction
     l();
     p("6: ON PERFORMANCE");
     p("");
-    p("I hope you are by now starting to appreciate the usability of the Stremebase API.");
-    p("But maybe you wonder: Is Stremebase performant?");
+    p("Maybe you wonder: Is Stremebase performant?");
     p("Well, comparing database performance is very hard.");
     p("But what the heck, let's compare StremeBase's OneMap to Java Collection Framework's HashMap!");
     p("");
@@ -359,8 +353,11 @@ public class Stremebase_1_Introduction
     }
     p("");
     p("Of course we were comparing apples and oranges;");
-    p("*Persistence by HashMap serialization would be extremely slow*");
-    p("*HashMap size is limited by Java heap size, OneMap size is limited by hard disk size*");
+    p("-Persistence implemented with HashMap serialization would be extremely slow");
+    p("-HashMap size is limited by Java heap size, OneMap size is limited by hard disk size");
+    p("-OneMap streams keys in ascending order, HashMap's keyset order is random.");
+    p("-OneMap can be indexed.");
+    p("-OneMap is very simple. More powerful stuff will be introduced later...");
   }
 
   public static void recap()
