@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>stremebase-src</name>
-			<type>2</type>
-			<location>/home/olli/git/Stremebase-source/StremeBase/src</location>
-		</link>
-	</linkedResources>
 </projectDescription>
