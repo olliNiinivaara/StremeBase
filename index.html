@@ -4,7 +4,7 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Stremebase : The Java programmer's database engine.">
+    <meta name="description" content="Stremebase : a database engine.">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 <!--script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js?skin=desert"></script-->
@@ -20,43 +20,28 @@
           <a id="forkme_banner" href="https://github.com/olliNiinivaara/Stremebase-source">View on GitHub</a>
 
           <h1 id="project_title">Stremebase</h1>
-          <h2 id="project_tagline">The Java programmer's database engine.</h2>
+          <h2 id="project_tagline">a database engine.</h2>
         </header>
     </div>
 
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
+      <p>
+        Stremebase was a successful PoC database engine used for researching novel data structures for databases.
+     </p>
       <section id="main_content" class="inner">
         
-<!--pre class="prettyprint">
-import com.stremebase.base.DB;
-import com.stremebase.map.OneMap;
-
-DB.startDB(true);
-
-OneMap map = new OneMap("map");
-long key = map.getLargestKey();
-for (long i=0; i<100000; i++) map.put(++key, i%100);
-map.commit();
-map.query(47, 58).forEach(key->printf("%d->%d", key, map.get(key));
-</pre-->
-
 <p>Depends on : <a href="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java 8 JDK</a></p>
 <p>Latest version : <a class="jar_download_link" href="https://github.com/olliNiinivaara/Stremebase-source/blob/master/stremebase_0_7_1.jar?raw=true">stremebase_0_7_1.jar</a></p>
 <p>Documentation : <a href="http://olliniinivaara.github.io/Stremebase/JavaDoc/">JavaDoc</a></p>
 <p>Example : <a href="https://github.com/olliNiinivaara/Java-SE-TodoMVC">TodoMVC</a></p>
-
-<!--h3>
-<a id="support" class="anchor" href="#support-or-contact" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support</h3>
-<p>Olli Niinivaara at gmail.</p-->
-
 
       </section>
     </div>
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Stremebase maintained by <a href="https://github.com/olliNiinivaara">olliNiinivaara</a></p>
+        <p class="copyright">Stremebase was maintained by <a href="https://github.com/olliNiinivaara">olliNiinivaara</a></p>
       </footer>
     </div>
   </body>
